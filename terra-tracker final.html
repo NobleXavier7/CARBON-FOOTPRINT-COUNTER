@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terra Tracker — The Nature Conservancy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & ROOT ─── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+:root {
+  /* Vibrant palette */
+  --bg:        #0a1628;
+  --bg2:       #0d1f35;
+  --bg3:       #112240;
+  --surface:   #162a47;
+  --surface2:  #1d3557;
+  --border:    rgba(99,212,158,0.15);
+  --border2:   rgba(99,212,158,0.25);
+
+  --emerald:   #63d49e;
+  --emerald2:  #4fbf88;
+  --emerald3:  #2a9d6e;
+  --lime:      #a8e063;
+  --teal:      #38d9d9;
+  --coral:     #ff6b6b;
+  --amber:     #ffd93d;
+  --violet:    #a78bfa;
+  --sky:       #60c9f5;
+
+  --text:      #e8f4f0;
+  --text2:     #a8c4b8;
+  --text3:     #6b8a7a;
+
+  --font-h:    'Syne', sans-serif;
+  --font-b:    'DM Sans', sans-serif;
+
+  --shadow:    0 8px 32px rgba(0,0,0,0.3);
+  --shadow2:   0 20px 60px rgba(0,0,0,0.5);
+  --glow:      0 0 30px rgba(99,212,158,0.2);
+  --r:         18px;
+  --r2:        24px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Mesh background texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,212,158,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(56,217,217,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(167,139,250,0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Organic blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,22,40,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 60px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-h);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--emerald);
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: -0.02em;
+}
+
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--emerald), var(--teal));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 0 16px rgba(99,212,158,0.35);
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 4px;
+  list-style: none;
+}
+
+.nav-links li a, .nav-links li button {
+  display: block;
+  padding: 8px 16px;
+  font-family: var(--font-b);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text2);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.nav-links li a:hover, .nav-links li button:hover {
+  background: rgba(99,212,158,0.1); color: var(--emerald);
+}
+.nav-links li a.active { color: var(--emerald); font-weight: 600; }
+.nav-links li a.active::after {
+  content: '';
+  display: block;
+  height: 2px; background: var(--emerald);
+  border-radius: 2px; margin-top: 2px;
+  box-shadow: 0 0 8px rgba(99,212,158,0.6);
+}
+
+.btn-nav-cta {
+  background: linear-gradient(135deg, var(--emerald), var(--teal)) !important;
+  color: var(--bg) !important;
+  border-radius: 100px !important;
+  padding: 8px 22px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 20px rgba(99,212,158,0.3) !important;
+}
+.btn-nav-cta:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 0 30px rgba(99,212,158,0.5) !important;
+  color: var(--bg) !important;
+}
+
+/* ─── PAGES ─── */
+.page { display: none; padding-top: 68px; min-height: 100vh; position: relative; z-index: 1; }
+.page.active { display: block; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-b);
+  font-size: 14px; font-weight: 700;
+  border: none; cursor: pointer;
+  border-radius: 100px;
+  padding: 13px 28px;
+  transition: all 0.25s;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--emerald), var(--teal));
+  color: var(--bg);
+  box-shadow: 0 4px 20px rgba(99,212,158,0.3);
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 32px rgba(99,212,158,0.5);
+  transform: translateY(-2px);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--emerald);
+  border: 2px solid rgba(99,212,158,0.4);
+}
+.btn-outline:hover {
+  background: rgba(99,212,158,0.1);
+  border-color: var(--emerald);
+  box-shadow: 0 0 20px rgba(99,212,158,0.15);
+}
+.btn-sm { padding: 8px 18px; font-size: 13px; }
+.btn-white {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+}
+.btn-white:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* ─── SECTION HEADERS ─── */
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--emerald);
+  background: rgba(99,212,158,0.12);
+  border: 1px solid rgba(99,212,158,0.2);
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+.section-head {
+  font-family: var(--font-h);
+  font-size: clamp(32px,4vw,48px);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.section-sub {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════
+   HOME PAGE
+═══════════════════════════════ */
+#home {}
+
+/* HERO */
+.hero {
+  position: relative;
+  min-height: calc(100vh - 68px);
+  display: flex; align-items: center;
+  padding: 80px 60px;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 40%, var(--bg3) 100%);
+}
+
+.hero-blob1 {
+  width: 600px; height: 600px; top: -200px; right: -150px;
+  background: radial-gradient(circle, var(--emerald) 0%, transparent 70%);
+  opacity: 0.12;
+}
+.hero-blob2 {
+  width: 400px; height: 400px; bottom: -100px; left: 30%;
+  background: radial-gradient(circle, var(--teal) 0%, transparent 70%);
+  opacity: 0.08;
+}
+
+/* Floating dots decoration */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle 1px at 20% 30%, rgba(99,212,158,0.4) 1px, transparent 0),
+    radial-gradient(circle 1px at 60% 20%, rgba(56,217,217,0.3) 1px, transparent 0),
+    radial-gradient(circle 1px at 80% 60%, rgba(99,212,158,0.25) 1px, transparent 0),
+    radial-gradient(circle 1.5px at 40% 70%, rgba(168,224,99,0.3) 1.5px, transparent 0),
+    radial-gradient(circle 1px at 10% 80%, rgba(56,217,217,0.25) 1px, transparent 0),
+    radial-gradient(circle 1px at 70% 85%, rgba(99,212,158,0.2) 1px, transparent 0);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 580px;
+  animation: fade-up 0.7s ease both;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--emerald);
+  background: rgba(99,212,158,0.1);
+  border: 1px solid rgba(99,212,158,0.2);
+  padding: 6px 16px; border-radius: 100px;
+  margin-bottom: 28px;
+}
+.hero-eyebrow::before {
+  content: ''; display: block;
+  width: 6px; height: 6px;
+  background: var(--emerald);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--emerald);
+}
+
+.hero-title {
+  font-family: var(--font-h);
+  font-size: clamp(44px, 5.5vw, 74px);
+  font-weight: 800;
+  line-height: 1.0;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
+}
+.hero-title em {
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--teal) 50%, var(--lime) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: normal;
+}
+
+.hero-desc {
+  font-size: 18px; color: var(--text2);
+  line-height: 1.7; margin-bottom: 38px;
+  max-width: 480px;
+  font-weight: 300;
+}
+
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.hero-stats {
+  display: flex; gap: 36px;
+  margin-top: 52px; padding-top: 36px;
+  border-top: 1px solid var(--border);
+}
+
+.hero-stat-val {
+  font-family: var(--font-h);
+  font-size: 34px; font-weight: 800;
+  background: linear-gradient(135deg, var(--emerald), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+.hero-stat-label {
+  font-size: 12px; color: var(--text3);
+  margin-top: 4px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* HERO ILLUSTRATION */
+.hero-visual {
+  position: absolute; right: 60px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(-50%) translateY(0); }
+  50%      { transform: translateY(-50%) translateY(-18px); }
+}
+
+.hero-globe-wrap {
+  width: 380px; height: 380px;
+  position: relative;
+}
+
+/* SVG Globe + hands inline illustration */
+.globe-svg { width: 100%; height: 100%; }
+
+/* OVERVIEW STRIP */
+.overview-strip {
+  background: var(--surface);
+  padding: 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.overview-item {
+  padding: 40px;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  align-items: flex-start; gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.overview-item::before {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--emerald), var(--teal));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+  transform-origin: left;
+}
+.overview-item:last-child { border-right: none; }
+.overview-item:hover { background: var(--surface2); }
+.overview-item:hover::before { transform: scaleX(1); }
+
+.ov-icon {
+  width: 64px; height: 64px;
+  background: rgba(99,212,158,0.1);
+  border: 1px solid rgba(99,212,158,0.2);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  transition: all 0.3s;
+}
+.overview-item:hover .ov-icon {
+  background: rgba(99,212,158,0.18);
+  box-shadow: 0 0 20px rgba(99,212,158,0.2);
+}
+
+.ov-title {
+  font-family: var(--font-h);
+  font-size: 22px; font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.ov-desc { font-size: 14px; color: var(--text2); line-height: 1.65; }
+.ov-link {
+  font-size: 13px; font-weight: 700;
+  color: var(--emerald);
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 4px;
+}
+
+/* RESULTS PREVIEW */
+.results-preview {
+  padding: 90px 60px;
+  background: var(--bg2);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.result-card-big {
+  background: var(--surface);
+  border-radius: var(--r2);
+  padding: 36px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.rc-label {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 12px; font-weight: 600;
+}
+.rc-number {
+  font-family: var(--font-h);
+  font-size: 76px; font-weight: 800;
+  color: var(--text); line-height: 1;
+  letter-spacing: -0.04em;
+}
+.rc-unit {
+  font-size: 12px; color: var(--text3);
+  margin-top: 4px; margin-bottom: 24px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.rc-bar-wrap {
+  background: var(--bg);
+  border-radius: 100px; height: 8px;
+  overflow: hidden; margin-bottom: 8px;
+}
+.rc-bar {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--emerald3), var(--emerald), var(--teal));
+  width: 52%;
+}
+.rc-compare {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text2);
+}
+.badge-green {
+  background: rgba(99,212,158,0.15);
+  color: var(--emerald);
+  border: 1px solid rgba(99,212,158,0.25);
+  border-radius: 100px; padding: 2px 12px;
+  font-size: 12px; font-weight: 700;
+}
+
+.result-breakdown {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-top: 24px;
+}
+.rb-row {
+  display: flex; align-items: center; gap: 12px;
+}
+.rb-icon { font-size: 18px; width: 28px; text-align: center; }
+.rb-label { font-size: 13px; color: var(--text2); flex: 1; }
+.rb-bar-wrap { flex: 2; background: var(--bg); border-radius: 100px; height: 6px; overflow: hidden; }
+.rb-bar { height: 100%; border-radius: 100px; background: var(--emerald); }
+.rb-val { font-size: 13px; font-weight: 700; color: var(--text); width: 50px; text-align: right; }
+
+/* TIPS PREVIEW */
+.tips-preview {
+  padding: 90px 60px;
+  background: var(--bg3);
+}
+
+.tips-preview-head {
+  display: flex; align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.tip-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 32px;
+  display: flex; flex-direction: column; gap: 14px;
+  transition: all 0.3s;
+  border: 1px solid var(--border);
+}
+.tip-card:hover {
+  border-color: rgba(99,212,158,0.35);
+  box-shadow: var(--shadow), var(--glow);
+  transform: translateY(-6px);
+}
+
+.tip-card-icon {
+  width: 56px; height: 56px;
+  background: rgba(99,212,158,0.1);
+  border: 1px solid rgba(99,212,158,0.15);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+
+.tip-card-cat {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal); font-weight: 700;
+}
+.tip-card-title {
+  font-family: var(--font-h);
+  font-size: 18px; font-weight: 700; color: var(--text);
+  letter-spacing: -0.01em;
+}
+.tip-card-desc { font-size: 14px; color: var(--text2); line-height: 1.65; }
+
+.tip-card-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 700; color: var(--emerald);
+  margin-top: auto; cursor: pointer;
+  background: none; border: none;
+}
+
+/* CTA BANNER */
+.cta-banner {
+  margin: 0 60px 80px;
+  background: linear-gradient(135deg, #0d3b2e 0%, #0a2d40 50%, #12234a 100%);
+  border: 1px solid rgba(99,212,158,0.25);
+  border-radius: 28px;
+  padding: 64px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 40px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 0 60px rgba(99,212,158,0.08), var(--shadow);
+}
+
+.cta-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 50% 80% at 80% 50%, rgba(56,217,217,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 20% 50%, rgba(99,212,158,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.cta-banner::after {
+  content: '🌿';
+  position: absolute; right: 180px; bottom: -30px;
+  font-size: 180px; opacity: 0.06;
+}
+
+.cta-banner-text h2 {
+  font-family: var(--font-h);
+  font-size: 38px; font-weight: 800;
+  color: white; margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.cta-banner-text p {
+  font-size: 16px; color: rgba(255,255,255,0.6);
+  max-width: 480px; line-height: 1.65;
+}
+
+/* ═══════════════════════════════
+   CALCULATOR PAGE
+═══════════════════════════════ */
+#calculator {}
+
+.calc-hero {
+  background: linear-gradient(160deg, var(--bg) 0%, var(--bg3) 100%);
+  padding: 64px 60px 48px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.calc-hero-blob {
+  width: 500px; height: 500px; top: -200px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, var(--emerald), transparent 70%);
+  opacity: 0.08;
+}
+
+.calc-body { padding: 48px 60px 80px; background: var(--bg); }
+
+/* Step nav */
+.calc-steps {
+  display: flex; gap: 0;
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: var(--shadow);
+  margin-bottom: 40px;
+  max-width: 780px; margin-left: auto; margin-right: auto;
+  border: 1px solid var(--border);
+}
+
+.step-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 14px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: none; border: none;
+  transition: all 0.2s;
+  color: var(--text3); font-family: var(--font-b);
+}
+.step-tab .st-icon { font-size: 22px; }
+.step-tab .st-label { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+.step-tab.active {
+  background: linear-gradient(135deg, var(--emerald3), var(--emerald));
+  color: var(--bg);
+  box-shadow: 0 4px 16px rgba(99,212,158,0.35);
+}
+.step-tab.done {
+  color: var(--emerald);
+  background: rgba(99,212,158,0.12);
+}
+
+/* Form sections */
+.calc-form { max-width: 780px; margin: 0 auto; }
+
+.form-section { display: none; animation: fade-up 0.3s ease both; }
+.form-section.active { display: block; }
+
+.form-card {
+  background: var(--surface);
+  border-radius: var(--r2);
+  padding: 40px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.form-card-title {
+  font-family: var(--font-h);
+  font-size: 22px; font-weight: 700;
+  color: var(--text); margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.form-card-desc { font-size: 14px; color: var(--text2); margin-bottom: 32px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.form-field { display: flex; flex-direction: column; gap: 8px; }
+.form-field.full { grid-column: 1/-1; }
+
+.form-field label {
+  font-size: 13px; font-weight: 600; color: var(--text2);
+  letter-spacing: 0.03em; text-transform: uppercase;
+}
+
+.form-field input, .form-field select {
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 15px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%2363d49e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+  cursor: pointer;
+}
+.form-field select option { background: var(--surface); color: var(--text); }
+.form-field input:focus, .form-field select:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(99,212,158,0.15);
+  background: var(--surface);
+}
+.form-field input::placeholder { color: var(--text3); }
+.form-field .hint { font-size: 12px; color: var(--text3); margin-top: -4px; }
+
+/* Toggle pills */
+.toggle-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.toggle-pills input { display: none; }
+.toggle-pills label {
+  padding: 9px 20px;
+  border-radius: 100px;
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  font-size: 13px; font-weight: 600; color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.toggle-pills input:checked + label {
+  background: linear-gradient(135deg, var(--emerald3), var(--emerald));
+  color: var(--bg);
+  border-color: transparent;
+  box-shadow: 0 0 14px rgba(99,212,158,0.3);
+}
+.toggle-pills label:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+}
+
+/* Form nav */
+.form-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 780px; margin: 0 auto;
+  padding-top: 8px;
+}
+
+/* ═══════════════════════════════
+   RESULTS PAGE
+═══════════════════════════════ */
+#results-page {}
+
+.results-hero {
+  background: linear-gradient(160deg, var(--bg3) 0%, #0a2d1f 50%, var(--bg) 100%);
+  padding: 64px 60px;
+  text-align: center;
+  color: white;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.results-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(99,212,158,0.12) 0%, transparent 70%);
+}
+.results-hero h1 {
+  font-family: var(--font-h); font-size: 48px; font-weight: 800;
+  margin-bottom: 12px; letter-spacing: -0.03em;
+  position: relative; z-index: 2;
+}
+.results-hero p { font-size: 18px; color: var(--text2); position: relative; z-index: 2; }
+
+.results-body { padding: 60px; background: var(--bg); }
+
+.results-main-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 32px; margin-bottom: 32px;
+}
+
+.score-card {
+  background: var(--surface);
+  border-radius: var(--r2);
+  padding: 40px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.score-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 16px; font-weight: 600; }
+.score-ring {
+  width: 180px; height: 180px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.score-number {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.score-val { font-family: var(--font-h); font-size: 44px; font-weight: 800; color: var(--emerald); line-height: 1; letter-spacing: -0.03em; }
+.score-unit { font-size: 12px; color: var(--text3); }
+
+.score-rating {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 18px; border-radius: 100px;
+  font-size: 13px; font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.rating-good { background: rgba(99,212,158,0.15); color: var(--emerald); border: 1px solid rgba(99,212,158,0.25); }
+.rating-avg  { background: rgba(255,217,61,0.15); color: var(--amber); border: 1px solid rgba(255,217,61,0.25); }
+.rating-high { background: rgba(255,107,107,0.15); color: var(--coral); border: 1px solid rgba(255,107,107,0.25); }
+
+.score-compare {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 13px; color: var(--text2); line-height: 1.65;
+  border: 1px solid var(--border);
+}
+
+/* Breakdown card */
+.breakdown-card {
+  background: var(--surface);
+  border-radius: var(--r2);
+  padding: 36px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.bc-title {
+  font-family: var(--font-h); font-size: 20px; font-weight: 700;
+  color: var(--text); margin-bottom: 28px; letter-spacing: -0.01em;
+}
+
+.bc-row {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 18px;
+}
+.bc-icon { font-size: 22px; width: 32px; text-align: center; }
+.bc-label { font-size: 14px; color: var(--text2); width: 120px; flex-shrink: 0; }
+.bc-track { flex: 1; height: 10px; background: var(--bg); border-radius: 100px; overflow: hidden; }
+.bc-fill { height: 100%; border-radius: 100px; transition: width 1.5s cubic-bezier(.16,1,.3,1); }
+.bc-fill.transport { background: linear-gradient(90deg, #38a5d9, #60c9f5); }
+.bc-fill.home      { background: linear-gradient(90deg, #e05a2a, #ffa040); }
+.bc-fill.diet      { background: linear-gradient(90deg, var(--emerald3), var(--lime)); }
+.bc-fill.lifestyle { background: linear-gradient(90deg, #8a60e0, var(--violet)); }
+.bc-val { font-size: 14px; font-weight: 700; color: var(--text); width: 60px; text-align: right; }
+
+/* Comparison section */
+.comparison-section {
+  background: var(--surface);
+  border-radius: var(--r2);
+  padding: 40px;
+  box-shadow: var(--shadow);
+  margin-bottom: 32px;
+  border: 1px solid var(--border);
+}
+
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; margin-top: 32px;
+}
+
+.comp-col { text-align: center; }
+.comp-bar-wrap {
+  height: 140px;
+  display: flex; align-items: flex-end; justify-content: center;
+  margin-bottom: 12px;
+}
+.comp-bar {
+  width: 52px; border-radius: 10px 10px 0 0;
+  transition: height 1.5s cubic-bezier(.16,1,.3,1);
+}
+.comp-bar.you    { background: linear-gradient(180deg, var(--emerald), var(--emerald3)); box-shadow: 0 0 20px rgba(99,212,158,0.3); }
+.comp-bar.india  { background: linear-gradient(180deg, var(--sky), #2a88b8); }
+.comp-bar.world  { background: linear-gradient(180deg, var(--amber), #e0a800); }
+.comp-bar.us     { background: linear-gradient(180deg, var(--coral), #d04040); }
+.comp-name { font-size: 13px; font-weight: 600; color: var(--text2); }
+.comp-val  { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+/* Donut chart */
+.donut-section {
+  display: grid; grid-template-columns: 240px 1fr;
+  gap: 32px; align-items: center; margin-top: 28px;
+}
+.donut-legend { display: flex; flex-direction: column; gap: 14px; }
+.legend-row { display: flex; align-items: center; gap: 10px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
+.legend-label { font-size: 13px; color: var(--text2); flex: 1; }
+.legend-pct { font-size: 13px; font-weight: 700; color: var(--text); }
+
+/* ═══════════════════════════════
+   TIPS PAGE
+═══════════════════════════════ */
+#tips-page {}
+.tips-full-hero {
+  background: linear-gradient(160deg, var(--bg) 0%, var(--bg3) 100%);
+  padding: 64px 60px 0;
+  text-align: center;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.tips-full-hero-blob {
+  width: 600px; height: 350px; top: -100px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, var(--teal), transparent 70%);
+  opacity: 0.08;
+}
+
+.tips-filter-bar {
+  display: flex; justify-content: center; gap: 8px;
+  padding: 32px 0;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 9px 22px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-family: var(--font-b);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: linear-gradient(135deg, var(--emerald3), var(--emerald));
+  color: var(--bg);
+  border-color: transparent;
+  box-shadow: 0 0 16px rgba(99,212,158,0.3);
+}
+
+.tips-full-body { padding: 0 60px 80px; background: var(--bg); }
+
+.tips-full-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.tip-full-card {
+  background: var(--surface);
+  border-radius: var(--r2);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+  border: 1px solid var(--border);
+}
+.tip-full-card:hover { transform: translateY(-6px); box-shadow: var(--shadow2), 0 0 30px rgba(99,212,158,0.12); border-color: rgba(99,212,158,0.3); }
+
+.tip-full-top {
+  height: 120px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 52px;
+  position: relative;
+  background: var(--surface2) !important;
+}
+
+.tip-full-body-inner { padding: 24px; }
+.tip-full-cat { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+.tip-full-title { font-family: var(--font-h); font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: -0.01em; }
+.tip-full-desc { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 16px; }
+.tip-full-impact {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: rgba(99,212,158,0.08);
+  border: 1px solid rgba(99,212,158,0.15);
+  border-radius: 10px;
+  font-size: 13px;
+}
+.tip-impact-label { color: var(--text3); }
+.tip-impact-val { font-weight: 700; color: var(--emerald); margin-left: auto; }
+
+/* ═══════════════════════════════
+   EDUCATION PAGE
+═══════════════════════════════ */
+#education {}
+
+.edu-hero {
+  background: linear-gradient(160deg, var(--bg3) 0%, var(--bg2) 100%);
+  padding: 80px 60px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.edu-body { padding: 60px; background: var(--bg); }
+
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; margin-bottom: 60px;
+}
+
+.fact-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.fact-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--emerald), var(--teal));
+}
+.fact-card:hover { transform: translateY(-5px); box-shadow: var(--shadow2), var(--glow); border-color: rgba(99,212,158,0.3); }
+.fact-icon { font-size: 36px; margin-bottom: 12px; }
+.fact-val { font-family: var(--font-h); font-size: 34px; font-weight: 800; color: var(--emerald); letter-spacing: -0.02em; }
+.fact-desc { font-size: 13px; color: var(--text3); margin-top: 6px; line-height: 1.5; }
+
+.edu-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.edu-card {
+  background: var(--surface);
+  border-radius: var(--r2);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s;
+}
+.edu-card:hover { border-color: rgba(99,212,158,0.3); }
+
+.edu-card-top {
+  padding: 36px;
+  display: flex; align-items: flex-start; gap: 20px;
+}
+
+.edu-card-icon {
+  width: 64px; height: 64px; flex-shrink: 0;
+  background: rgba(99,212,158,0.1);
+  border: 1px solid rgba(99,212,158,0.2);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+}
+
+.edu-card-title {
+  font-family: var(--font-h);
+  font-size: 22px; font-weight: 700; color: var(--text);
+  margin-bottom: 8px; letter-spacing: -0.01em;
+}
+.edu-card-desc { font-size: 14px; color: var(--text2); line-height: 1.65; }
+
+.edu-card-facts {
+  border-top: 1px solid var(--border);
+  padding: 24px 36px;
+  display: flex; flex-direction: column; gap: 10px;
+  background: rgba(0,0,0,0.15);
+}
+
+.edu-fact-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--text2); line-height: 1.5;
+}
+.edu-fact-bullet { color: var(--emerald); font-size: 18px; line-height: 1.3; flex-shrink: 0; }
+
+/* Resources */
+.resources-section { padding: 60px; background: var(--bg2); }
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 40px;
+}
+
+.resource-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--emerald);
+}
+.resource-card:hover { transform: translateY(-5px); box-shadow: var(--shadow2), 0 0 24px rgba(99,212,158,0.1); border-color: rgba(99,212,158,0.35); }
+.resource-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); font-weight: 700; }
+.resource-title { font-family: var(--font-h); font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+.resource-desc { font-size: 14px; color: var(--text2); line-height: 1.65; flex: 1; }
+.resource-link { font-size: 13px; font-weight: 700; color: var(--emerald); display: flex; align-items: center; gap: 4px; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #050d1a;
+  color: rgba(255,255,255,0.5);
+  padding: 60px;
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 40px;
+}
+.footer-brand { display: flex; flex-direction: column; gap: 14px; }
+.footer-logo {
+  font-family: var(--font-h); font-size: 22px; font-weight: 800; color: white;
+  display: flex; align-items: center; gap: 10px; letter-spacing: -0.01em;
+}
+.footer-tagline { font-size: 13px; line-height: 1.65; max-width: 280px; }
+.footer-col h4 {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 700; color: var(--emerald); margin-bottom: 16px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a {
+  color: rgba(255,255,255,0.45); text-decoration: none; font-size: 14px;
+  transition: color 0.2s; cursor: pointer;
+}
+.footer-col ul li a:hover { color: var(--emerald); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px;
+}
+.footer-bottom a { color: rgba(255,255,255,0.35); text-decoration: none; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99,212,158,0.2); }
+  50% { box-shadow: 0 0 40px rgba(99,212,158,0.4); }
+}
+
+.anim { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.anim.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESULTS CALC ─── */
+#results-page .score-val { transition: opacity 0.4s; }
+
+/* SVG ring color update */
+#scoreCircle { stroke: var(--emerald); }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--emerald3); }</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-icon">🌿</div>
+    Terra Tracker
+  </a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a onclick="showPage('calculator')" id="nav-calculator">Calculator</a></li>
+    <li><a onclick="showPage('results-page')" id="nav-results">Results</a></li>
+    <li><a onclick="showPage('tips-page')" id="nav-tips">Tips & Education</a></li>
+    <li><a onclick="showPage('education')" id="nav-education">Learn</a></li>
+    <li><button class="btn-nav-cta" onclick="showPage('calculator')">Get Started →</button></li>
+  </ul>
+</nav>
+
+<!-- ═══ HOME PAGE ═══ -->
+<div class="page active" id="home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="blob hero-blob1"></div>
+    <div class="blob hero-blob2"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">The Nature Conservancy</div>
+      <h1 class="hero-title">
+        Calculate Your<br>
+        <em>Carbon</em><br>
+        Footprint
+      </h1>
+      <p class="hero-desc">
+        Understand your environmental impact and discover personalised strategies to live more sustainably — one step at a time.
+      </p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="showPage('calculator')">Get Started →</button>
+        <button class="btn btn-outline" onclick="showPage('education')">Learn More</button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">7t</div>
+          <div class="hero-stat-label">Global avg. CO₂/year</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">2t</div>
+          <div class="hero-stat-label">Sustainable target</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">50%</div>
+          <div class="hero-stat-label">Possible reduction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Globe Illustration -->
+    <div class="hero-visual">
+      <svg class="globe-svg" viewBox="0 0 340 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer glow ring -->
+        <circle cx="170" cy="170" r="160" fill="none" stroke="rgba(99,212,158,0.08)" stroke-width="1"/>
+        <circle cx="170" cy="170" r="145" fill="none" stroke="rgba(99,212,158,0.05)" stroke-width="1"/>
+        <!-- Glow background -->
+        <circle cx="170" cy="155" r="108" fill="#0a2d40" opacity="0.9"/>
+        <circle cx="170" cy="155" r="105" fill="none" stroke="rgba(56,217,217,0.3)" stroke-width="1.5"/>
+        <!-- Earth ocean -->
+        <circle cx="170" cy="155" r="100" fill="#0d3d5a"/>
+        <!-- Land masses -->
+        <ellipse cx="150" cy="130" rx="32" ry="28" fill="#2a9d6e" opacity="0.95"/>
+        <ellipse cx="185" cy="155" rx="22" ry="30" fill="#4fbf88" opacity="0.9"/>
+        <ellipse cx="148" cy="170" rx="14" ry="18" fill="#2a9d6e" opacity="0.8"/>
+        <ellipse cx="200" cy="128" rx="16" ry="12" fill="#4fbf88" opacity="0.85"/>
+        <ellipse cx="130" cy="158" rx="10" ry="8" fill="#1a7a52" opacity="0.8"/>
+        <!-- Grid lines -->
+        <ellipse cx="170" cy="155" rx="100" ry="100" stroke="rgba(99,212,158,0.15)" stroke-width="0.5"/>
+        <path d="M70 155 Q170 125 270 155" stroke="rgba(56,217,217,0.2)" stroke-width="0.5" fill="none"/>
+        <path d="M80 135 Q170 108 260 135" stroke="rgba(56,217,217,0.15)" stroke-width="0.5" fill="none"/>
+        <path d="M80 175 Q170 200 260 175" stroke="rgba(56,217,217,0.15)" stroke-width="0.5" fill="none"/>
+        <line x1="170" y1="55" x2="170" y2="255" stroke="rgba(99,212,158,0.12)" stroke-width="0.5"/>
+        <!-- Atmosphere glow on top -->
+        <circle cx="170" cy="155" r="100" fill="none" stroke="rgba(99,212,158,0.15)" stroke-width="6"/>
+        <!-- Clouds -->
+        <ellipse cx="135" cy="100" rx="18" ry="9" fill="rgba(255,255,255,0.12)"/>
+        <ellipse cx="220" cy="175" rx="15" ry="7" fill="rgba(255,255,255,0.10)"/>
+        <!-- Hands -->
+        <path d="M90 230 C80 210 75 200 80 185 C85 170 95 168 100 175 C104 162 112 160 117 168 C120 156 130 155 135 164 C139 153 148 152 152 162 L152 230 Z" fill="#3a9d7a"/>
+        <path d="M250 230 C260 210 265 200 260 185 C255 170 245 168 240 175 C236 162 228 160 223 168 C220 156 210 155 205 164 C201 153 192 152 188 162 L188 230 Z" fill="#3a9d7a"/>
+        <!-- Leaves top -->
+        <path d="M155 55 C148 40 135 32 130 42 C128 48 135 55 145 57 C142 60 140 68 147 68 C155 68 160 60 155 55Z" fill="#63d49e"/>
+        <path d="M185 50 C192 35 205 27 210 37 C212 43 205 50 195 52 C198 55 200 63 193 63 C185 63 180 55 185 50Z" fill="#a8e063"/>
+        <!-- Sparkles / stars -->
+        <circle cx="102" cy="120" r="3" fill="rgba(99,212,158,0.7)"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="3s" repeatCount="indefinite"/></circle>
+        <circle cx="238" cy="108" r="2.5" fill="rgba(56,217,217,0.6)"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.5s" repeatCount="indefinite" begin="0.5s"/></circle>
+        <circle cx="250" cy="190" r="3" fill="rgba(168,224,99,0.5)"><animate attributeName="opacity" values="0.5;0.1;0.5" dur="4s" repeatCount="indefinite" begin="1s"/></circle>
+        <circle cx="95" cy="190" r="2" fill="rgba(99,212,158,0.5)"><animate attributeName="opacity" values="0.5;0.15;0.5" dur="3.5s" repeatCount="indefinite" begin="1.5s"/></circle>
+        <!-- Orbit ring -->
+        <ellipse cx="170" cy="155" rx="130" ry="30" fill="none" stroke="rgba(99,212,158,0.12)" stroke-width="1" stroke-dasharray="4 6"/>
+        <!-- Orbit dot -->
+        <circle cx="300" cy="155" r="5" fill="var(--amber)" opacity="0.8"><animateMotion dur="8s" repeatCount="indefinite" path="M-130,0 A130,30 0 1,1 130,0 A130,30 0 1,1 -130,0"/></circle>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Overview Strip -->
+  <section class="overview-strip">
+    <div class="overview-item" onclick="showPage('calculator')">
+      <div class="ov-icon">🚗</div>
+      <div class="ov-title">Calculator</div>
+      <p class="ov-desc">Answer a few quick questions about travel, home energy, diet and lifestyle to get your footprint score.</p>
+      <div class="ov-link">Start calculating →</div>
+    </div>
+    <div class="overview-item" onclick="showPage('results-page')">
+      <div class="ov-icon">📊</div>
+      <div class="ov-title">Your Results</div>
+      <p class="ov-desc">See a visual breakdown of your CO₂ emissions and compare yourself to local and global averages.</p>
+      <div class="ov-link">View results →</div>
+    </div>
+    <div class="overview-item" onclick="showPage('tips-page')">
+      <div class="ov-icon">🌱</div>
+      <div class="ov-title">Tips & Solutions</div>
+      <p class="ov-desc">Get personalised, actionable recommendations to meaningfully reduce your carbon impact today.</p>
+      <div class="ov-link">Explore tips →</div>
+    </div>
+  </section>
+
+  <!-- Results Preview -->
+  <section class="results-preview">
+    <div class="anim">
+      <div class="section-tag">📈 Sample Results</div>
+      <h2 class="section-head">Understand Your<br>Impact at a Glance</h2>
+      <p class="section-sub">After completing the calculator, you'll get a comprehensive dashboard showing exactly where your emissions come from and how to reduce them.</p>
+      <br><br>
+      <button class="btn btn-primary" onclick="showPage('calculator')">Calculate Mine →</button>
+    </div>
+    <div class="anim">
+      <div class="result-card-big">
+        <div class="rc-label">Your Annual Footprint</div>
+        <div class="rc-number">7.2</div>
+        <div class="rc-unit">TONNES CO₂e / YEAR</div>
+        <div class="rc-bar-wrap"><div class="rc-bar"></div></div>
+        <div class="rc-compare">
+          <span class="badge-green">↓ Below Global Avg</span>
+          Global avg is 7.0t/yr
+        </div>
+        <div class="result-breakdown">
+          <div class="rb-row">
+            <div class="rb-icon">🚗</div>
+            <div class="rb-label">Transport</div>
+            <div class="rb-bar-wrap"><div class="rb-bar" style="width:70%;background:linear-gradient(90deg,#38a5d9,#60c9f5)"></div></div>
+            <div class="rb-val">2.8t</div>
+          </div>
+          <div class="rb-row">
+            <div class="rb-icon">🏠</div>
+            <div class="rb-label">Home Energy</div>
+            <div class="rb-bar-wrap"><div class="rb-bar" style="width:50%;background:linear-gradient(90deg,#e05a2a,#ffa040)"></div></div>
+            <div class="rb-val">2.0t</div>
+          </div>
+          <div class="rb-row">
+            <div class="rb-icon">🍽️</div>
+            <div class="rb-label">Diet</div>
+            <div class="rb-bar-wrap"><div class="rb-bar" style="width:35%;background:linear-gradient(90deg,#2a9d6e,#63d49e)"></div></div>
+            <div class="rb-val">1.4t</div>
+          </div>
+          <div class="rb-row">
+            <div class="rb-icon">🛍️</div>
+            <div class="rb-label">Lifestyle</div>
+            <div class="rb-bar-wrap"><div class="rb-bar" style="width:25%;background:linear-gradient(90deg,#8a60e0,#a78bfa)"></div></div>
+            <div class="rb-val">1.0t</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tips Preview -->
+  <section class="tips-preview">
+    <div class="tips-preview-head">
+      <div>
+        <div class="section-tag">🌿 Tips & Education</div>
+        <h2 class="section-head">Start Reducing<br>Your Footprint</h2>
+      </div>
+      <button class="btn btn-outline" onclick="showPage('tips-page')">View All Tips →</button>
+    </div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-card-icon">♻️</div>
+        <div class="tip-card-cat">Lifestyle</div>
+        <div class="tip-card-title">Reduce Waste: Composting Guide</div>
+        <p class="tip-card-desc">Up to 8% of global greenhouse gases come from wasted food. Composting diverts waste from landfill and returns nutrients to soil.</p>
+        <button class="tip-card-link" onclick="showPage('tips-page')">Learn More →</button>
+      </div>
+      <div class="tip-card">
+        <div class="tip-card-icon">☀️</div>
+        <div class="tip-card-cat">Home Energy</div>
+        <div class="tip-card-title">Green Energy: Solar Power Benefits</div>
+        <p class="tip-card-desc">Installing rooftop solar can cut your home electricity emissions by up to 90% — and your electricity bill along with it.</p>
+        <button class="tip-card-link" onclick="showPage('tips-page')">Learn More →</button>
+      </div>
+      <div class="tip-card">
+        <div class="tip-card-icon">🚲</div>
+        <div class="tip-card-cat">Transport</div>
+        <div class="tip-card-title">Eco-Travel: Sustainable Commuting</div>
+        <p class="tip-card-desc">Switching from a petrol car to cycling, walking, or public transport for your daily commute can save over 1 tonne of CO₂ annually.</p>
+        <button class="tip-card-link" onclick="showPage('tips-page')">Learn More →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div class="cta-banner-text">
+      <h2>Ready to make a difference?</h2>
+      <p>Join thousands of people using Terra Tracker to understand and reduce their impact on the planet. It only takes 3 minutes.</p>
+    </div>
+    <button class="btn btn-white" onclick="showPage('calculator')">Calculate Your Footprint →</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">🌿 Terra Tracker</div>
+        <p class="footer-tagline">The Nature Conservancy — empowering individuals to understand and reduce their carbon footprint for a healthier planet.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a onclick="showPage('calculator')">Calculator</a></li>
+          <li><a onclick="showPage('results-page')">Results Dashboard</a></li>
+          <li><a onclick="showPage('tips-page')">Tips & Solutions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a onclick="showPage('education')">Climate Science</a></li>
+          <li><a onclick="showPage('education')">Carbon Facts</a></li>
+          <li><a onclick="showPage('education')">Resources</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a>Our Mission</a></li>
+          <li><a>Privacy Policy</a></li>
+          <li><a>Terms of Service</a></li>
+          <li><a>Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Terra Tracker · The Nature Conservancy</span>
+      <div style="display:flex;gap:20px">
+        <a>Privacy Policy</a>
+        <a>Terms of Service</a>
+        <a>Contact Us</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ CALCULATOR PAGE ═══ -->
+<div class="page" id="calculator">
+  <div class="calc-hero">
+    <div class="blob calc-hero-blob"></div>
+    <div style="position:relative;z-index:2">
+      <div class="section-tag">🌿 Terra Tracker</div>
+      <h1 class="section-head">Carbon Footprint Calculator</h1>
+      <p class="section-sub" style="margin:0 auto">Answer questions about your lifestyle to calculate your annual CO₂ emissions. It takes about 3 minutes.</p>
+    </div>
+  </div>
+
+  <div class="calc-body">
+    <!-- Steps -->
+    <div class="calc-steps">
+      <button class="step-tab active" id="st0" onclick="goStep(0)">
+        <span class="st-icon">🚗</span>
+        <span class="st-label">Travel</span>
+      </button>
+      <button class="step-tab" id="st1" onclick="goStep(1)">
+        <span class="st-icon">🏠</span>
+        <span class="st-label">Home Energy</span>
+      </button>
+      <button class="step-tab" id="st2" onclick="goStep(2)">
+        <span class="st-icon">🍽️</span>
+        <span class="st-label">Food & Diet</span>
+      </button>
+      <button class="step-tab" id="st3" onclick="goStep(3)">
+        <span class="st-icon">🛍️</span>
+        <span class="st-label">Lifestyle</span>
+      </button>
+    </div>
+
+    <div class="calc-form">
+      <!-- Step 0: Travel -->
+      <div class="form-section active" id="fs0">
+        <div class="form-card">
+          <div class="form-card-title">🚗 Transportation & Travel</div>
+          <p class="form-card-desc">Tell us about your regular travel habits — commuting, flights, and how you get around day to day.</p>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>What type of car do you drive?</label>
+              <select id="c_carType">
+                <option value="0">I don't own a car</option>
+                <option value="0.21" selected>Petrol / Gasoline</option>
+                <option value="0.17">Diesel</option>
+                <option value="0.05">Electric (EV)</option>
+                <option value="0.10">Hybrid</option>
+                <option value="0.12">CNG / LPG</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>How many km do you drive per week?</label>
+              <input type="number" id="c_km" placeholder="e.g. 150" value="100" min="0">
+              <span class="hint">kilometres per week</span>
+            </div>
+            <div class="form-field">
+              <label>Short-haul flights per year (under 3 hrs)</label>
+              <input type="number" id="c_shortFlights" placeholder="e.g. 2" value="1" min="0">
+            </div>
+            <div class="form-field">
+              <label>Long-haul flights per year (over 3 hrs)</label>
+              <input type="number" id="c_longFlights" placeholder="e.g. 1" value="0" min="0">
+            </div>
+            <div class="form-field full">
+              <label>How often do you use public transport?</label>
+              <div class="toggle-pills">
+                <input type="radio" name="pub" id="pub0" value="0"><label for="pub0">Never</label>
+                <input type="radio" name="pub" id="pub1" value="-0.3" checked><label for="pub1">Occasionally</label>
+                <input type="radio" name="pub" id="pub2" value="-0.6"><label for="pub2">Regularly</label>
+                <input type="radio" name="pub" id="pub3" value="-1.0"><label for="pub3">Always (no car)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <div></div>
+          <button class="btn btn-primary" onclick="goStep(1)">Next: Home Energy →</button>
+        </div>
+      </div>
+
+      <!-- Step 1: Home -->
+      <div class="form-section" id="fs1">
+        <div class="form-card">
+          <div class="form-card-title">🏠 Home Energy</div>
+          <p class="form-card-desc">Your home's energy use for heating, cooling, and electricity is a major contributor to your footprint.</p>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Main electricity source</label>
+              <select id="c_elec">
+                <option value="0.82">Mostly coal / grid</option>
+                <option value="0.5" selected>Mixed grid (typical)</option>
+                <option value="0.25">Partly renewable</option>
+                <option value="0.05">Mostly renewable</option>
+                <option value="0.01">100% solar / green</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Monthly electricity usage (kWh)</label>
+              <input type="number" id="c_kwh" placeholder="e.g. 250" value="200" min="0">
+              <span class="hint">Check your electricity bill</span>
+            </div>
+            <div class="form-field">
+              <label>Primary heating fuel</label>
+              <select id="c_heat">
+                <option value="0">None / Electric</option>
+                <option value="0.5" selected>Natural gas</option>
+                <option value="0.8">Oil / LPG</option>
+                <option value="0.2">Wood / Biomass</option>
+                <option value="0.05">Heat pump</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Heating intensity</label>
+              <select id="c_heatUse">
+                <option value="0.5">Low (mild climate)</option>
+                <option value="1.0" selected>Moderate</option>
+                <option value="1.5">High (cold climate)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Number of people in your household</label>
+              <input type="number" id="c_members" placeholder="e.g. 3" value="3" min="1" max="20">
+            </div>
+            <div class="form-field">
+              <label>Home type</label>
+              <select id="c_homeType">
+                <option value="1.3">Detached house</option>
+                <option value="1.0" selected>Semi-detached / Row house</option>
+                <option value="0.7">Apartment</option>
+                <option value="0.5">Small flat / Studio</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn btn-outline" onclick="goStep(0)">← Back</button>
+          <button class="btn btn-primary" onclick="goStep(2)">Next: Food & Diet →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Diet -->
+      <div class="form-section" id="fs2">
+        <div class="form-card">
+          <div class="form-card-title">🍽️ Food & Diet</div>
+          <p class="form-card-desc">Food production accounts for around 26% of global emissions. Your dietary choices have a significant impact.</p>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>How would you describe your diet?</label>
+              <select id="c_diet">
+                <option value="3.3">Heavy meat eater (daily red meat)</option>
+                <option value="2.5" selected>Moderate meat eater</option>
+                <option value="1.9">Low meat / Pescatarian</option>
+                <option value="1.4">Vegetarian</option>
+                <option value="1.1">Vegan</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Dairy consumption</label>
+              <select id="c_dairy">
+                <option value="0.7">High</option>
+                <option value="0.4" selected>Moderate</option>
+                <option value="0.1">Low</option>
+                <option value="0">None / Plant-based</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label>How much food do you typically waste?</label>
+              <div class="toggle-pills">
+                <input type="radio" name="waste" id="w0" value="0.5"><label for="w0">A lot</label>
+                <input type="radio" name="waste" id="w1" value="0.25" checked><label for="w1">Moderate</label>
+                <input type="radio" name="waste" id="w2" value="0.05"><label for="w2">Very little</label>
+                <input type="radio" name="waste" id="w3" value="0"><label for="w3">Almost none</label>
+              </div>
+            </div>
+            <div class="form-field full">
+              <label>How often do you buy local & seasonal produce?</label>
+              <div class="toggle-pills">
+                <input type="radio" name="local" id="l0" value="0"><label for="l0">Rarely</label>
+                <input type="radio" name="local" id="l1" value="-0.1" checked><label for="l1">Sometimes</label>
+                <input type="radio" name="local" id="l2" value="-0.2"><label for="l2">Mostly</label>
+                <input type="radio" name="local" id="l3" value="-0.3"><label for="l3">Always</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="goStep(3)">Next: Lifestyle →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Lifestyle -->
+      <div class="form-section" id="fs3">
+        <div class="form-card">
+          <div class="form-card-title">🛍️ Shopping & Lifestyle</div>
+          <p class="form-card-desc">Consumer goods, digital habits, and recycling all play a role in your overall carbon footprint.</p>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>How often do you buy new clothes/goods?</label>
+              <select id="c_shop">
+                <option value="2.5">Very frequently (heavy shopper)</option>
+                <option value="1.5" selected>Moderately</option>
+                <option value="0.8">Minimally / Buy secondhand</option>
+                <option value="0.2">Rarely / Almost never</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Electronics purchases per year</label>
+              <input type="number" id="c_electronics" placeholder="e.g. 2" value="1" min="0">
+              <span class="hint">phones, laptops, tablets, etc.</span>
+            </div>
+            <div class="form-field full">
+              <label>Daily streaming & internet usage</label>
+              <div class="toggle-pills">
+                <input type="radio" name="stream" id="s0" value="0.1"><label for="s0">Low (&lt;1hr)</label>
+                <input type="radio" name="stream" id="s1" value="0.3" checked><label for="s1">Moderate (2–4hr)</label>
+                <input type="radio" name="stream" id="s2" value="0.6"><label for="s2">Heavy (5hr+)</label>
+              </div>
+            </div>
+            <div class="form-field full">
+              <label>How well do you recycle?</label>
+              <div class="toggle-pills">
+                <input type="radio" name="recycle" id="r0" value="0.4"><label for="r0">Not at all</label>
+                <input type="radio" name="recycle" id="r1" value="0.2"><label for="r1">Some items</label>
+                <input type="radio" name="recycle" id="r2" value="0" checked><label for="r2">Most items</label>
+                <input type="radio" name="recycle" id="r3" value="-0.2"><label for="r3">Everything + composting</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="runCalculate()">Calculate My Footprint 🌿</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="border:none;padding:0">
+      <span>© 2025 Terra Tracker · The Nature Conservancy</span>
+      <div style="display:flex;gap:20px">
+        <a>Privacy Policy</a><a>Terms</a><a>Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ RESULTS PAGE ═══ -->
+<div class="page" id="results-page">
+  <div class="results-hero">
+    <div class="blob" style="width:400px;height:400px;top:-150px;left:50%;transform:translateX(-50%);background:rgba(99,212,158,0.15);filter:blur(80px)"></div>
+    <div style="position:relative;z-index:2">
+      <h1>Your Carbon Footprint Results</h1>
+      <p>Here's a detailed breakdown of your environmental impact</p>
+    </div>
+  </div>
+
+  <div class="results-body">
+    <div class="results-main-grid">
+      <!-- Score card -->
+      <div class="score-card">
+        <div class="score-label">Your Annual Carbon Footprint</div>
+        <div class="score-ring">
+          <svg viewBox="0 0 180 180" style="width:100%;height:100%">
+            <defs>
+              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#63d49e"/>
+                <stop offset="100%" stop-color="#38d9d9"/>
+              </linearGradient>
+            </defs>
+            <circle cx="90" cy="90" r="76" fill="none" stroke="rgba(99,212,158,0.1)" stroke-width="14"/>
+            <circle cx="90" cy="90" r="76" fill="none" stroke="url(#scoreGrad)" stroke-width="14"
+              stroke-dasharray="477" stroke-dashoffset="229" stroke-linecap="round"
+              transform="rotate(-90 90 90)" id="scoreCircle"/>
+          </svg>
+          <div class="score-number">
+            <div class="score-val" id="r_total">7.2</div>
+            <div class="score-unit">tonnes CO₂e</div>
+          </div>
+        </div>
+        <div class="score-rating rating-avg" id="r_badge">⚠️ Near Global Average</div>
+        <div style="font-family:'Syne',sans-serif;font-size:17px;color:var(--text2);margin-bottom:16px" id="r_year">per year</div>
+        <div class="score-compare" id="r_compare">
+          Your footprint is close to the global average of 7.0t CO₂e/year. With some targeted changes, you could reduce it significantly.
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="breakdown-card">
+        <div class="bc-title">Emissions by Category</div>
+        <div id="r_breakdown">
+          <div class="bc-row">
+            <div class="bc-icon">🚗</div>
+            <div class="bc-label">Transport</div>
+            <div class="bc-track"><div class="bc-fill transport" id="rb_transport" style="width:70%"></div></div>
+            <div class="bc-val" id="rv_transport">2.8t</div>
+          </div>
+          <div class="bc-row">
+            <div class="bc-icon">🏠</div>
+            <div class="bc-label">Home Energy</div>
+            <div class="bc-track"><div class="bc-fill home" id="rb_home" style="width:50%"></div></div>
+            <div class="bc-val" id="rv_home">2.0t</div>
+          </div>
+          <div class="bc-row">
+            <div class="bc-icon">🍽️</div>
+            <div class="bc-label">Diet</div>
+            <div class="bc-track"><div class="bc-fill diet" id="rb_diet" style="width:35%"></div></div>
+            <div class="bc-val" id="rv_diet">1.4t</div>
+          </div>
+          <div class="bc-row">
+            <div class="bc-icon">🛍️</div>
+            <div class="bc-label">Lifestyle</div>
+            <div class="bc-track"><div class="bc-fill lifestyle" id="rb_lifestyle" style="width:25%"></div></div>
+            <div class="bc-val" id="rv_lifestyle">1.0t</div>
+          </div>
+        </div>
+
+        <!-- Donut -->
+        <div class="donut-section" style="margin-top:32px">
+          <svg viewBox="0 0 200 200" style="width:200px;height:200px">
+            <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(99,212,158,0.08)" stroke-width="28"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#60c9f5" stroke-width="28"
+              stroke-dasharray="439" stroke-dashoffset="0" transform="rotate(-90 100 100)"
+              id="d_transport"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#ffa040" stroke-width="28"
+              stroke-dasharray="439" stroke-dashoffset="317" transform="rotate(-90 100 100)"
+              id="d_home"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#63d49e" stroke-width="28"
+              stroke-dasharray="439" stroke-dashoffset="405" transform="rotate(-90 100 100)"
+              id="d_diet"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#a78bfa" stroke-width="28"
+              stroke-dasharray="439" stroke-dashoffset="427" transform="rotate(-90 100 100)"
+              id="d_lifestyle"/>
+            <text x="100" y="96" text-anchor="middle" font-size="13" fill="#a8c4b8" font-family="DM Sans,sans-serif" font-weight="600">Breakdown</text>
+            <text x="100" y="114" text-anchor="middle" font-size="12" fill="#6b8a7a" font-family="DM Sans,sans-serif">2025</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-row"><div class="legend-dot" style="background:#60c9f5"></div><div class="legend-label">Transport</div><div class="legend-pct" id="lp_t">39%</div></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#ffa040"></div><div class="legend-label">Home Energy</div><div class="legend-pct" id="lp_h">28%</div></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#63d49e"></div><div class="legend-label">Diet</div><div class="legend-pct" id="lp_d">19%</div></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#a78bfa"></div><div class="legend-label">Lifestyle</div><div class="legend-pct" id="lp_l">14%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison -->
+    <div class="comparison-section">
+      <div class="section-tag">🌍 Global Comparison</div>
+      <h2 class="section-head" style="font-size:26px;color:var(--text)">How You Compare</h2>
+      <div class="comp-grid" id="compGrid">
+        <div class="comp-col">
+          <div class="comp-bar-wrap"><div class="comp-bar you" id="bar_you" style="height:73px"></div></div>
+          <div class="comp-name">You</div>
+          <div class="comp-val" id="cval_you">7.2t</div>
+        </div>
+        <div class="comp-col">
+          <div class="comp-bar-wrap"><div class="comp-bar india" style="height:19px"></div></div>
+          <div class="comp-name">India Avg</div>
+          <div class="comp-val">1.9t</div>
+        </div>
+        <div class="comp-col">
+          <div class="comp-bar-wrap"><div class="comp-bar world" style="height:69px"></div></div>
+          <div class="comp-name">World Avg</div>
+          <div class="comp-val">7.0t</div>
+        </div>
+        <div class="comp-col">
+          <div class="comp-bar-wrap"><div class="comp-bar us" style="height:140px"></div></div>
+          <div class="comp-name">US Avg</div>
+          <div class="comp-val">14.2t</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn btn-primary" onclick="showPage('tips-page')">Get Personalised Tips →</button>
+      &nbsp;
+      <button class="btn btn-outline" onclick="showPage('calculator')">Recalculate</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="border:none;padding:0">
+      <span>© 2025 Terra Tracker · The Nature Conservancy</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ TIPS PAGE ═══ -->
+<div class="page" id="tips-page">
+  <div class="tips-full-hero">
+    <div class="blob tips-full-hero-blob"></div>
+    <div style="position:relative;z-index:2;padding-bottom:0">
+      <div class="section-tag">🌱 Reduction Strategies</div>
+      <h1 class="section-head">Tips & Solutions</h1>
+      <p class="section-sub" style="margin:0 auto">Practical, science-backed ways to reduce your carbon footprint — categorised so you can tackle what matters most.</p>
+    </div>
+    <div class="tips-filter-bar">
+      <button class="filter-btn active" onclick="filterTips('all',this)">All Tips</button>
+      <button class="filter-btn" onclick="filterTips('transport',this)">🚗 Transport</button>
+      <button class="filter-btn" onclick="filterTips('home',this)">🏠 Home Energy</button>
+      <button class="filter-btn" onclick="filterTips('diet',this)">🍽️ Diet</button>
+      <button class="filter-btn" onclick="filterTips('lifestyle',this)">🛍️ Lifestyle</button>
+    </div>
+  </div>
+
+  <div class="tips-full-body">
+    <div class="tips-full-grid" id="tipsGrid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="border:none;padding:0">
+      <span>© 2025 Terra Tracker · The Nature Conservancy</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ EDUCATION PAGE ═══ -->
+<div class="page" id="education">
+  <div class="edu-hero">
+    <div class="blob" style="width:500px;height:300px;top:-80px;left:50%;transform:translateX(-50%);background:rgba(99,212,158,0.12);filter:blur(80px)"></div>
+    <div style="position:relative;z-index:2">
+      <div class="section-tag">📚 Climate Science</div>
+      <h1 class="section-head">Learn About Climate Change</h1>
+      <p class="section-sub" style="margin:0 auto">Understanding the science behind carbon emissions empowers you to make better decisions for yourself and the planet.</p>
+    </div>
+  </div>
+
+  <div class="edu-body">
+    <!-- Key Facts -->
+    <div class="section-tag" style="margin-bottom:20px">⚡ Key Climate Facts</div>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-icon">🌡️</div>
+        <div class="fact-val">1.1°C</div>
+        <p class="fact-desc">Global temperature rise above pre-industrial levels since 1900</p>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">💨</div>
+        <div class="fact-val">37Gt</div>
+        <p class="fact-desc">Billion tonnes of CO₂ released globally every year from human activity</p>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🌊</div>
+        <div class="fact-val">3.7mm</div>
+        <p class="fact-desc">Average annual sea level rise — accelerating due to ice sheet melting</p>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎯</div>
+        <div class="fact-val">2t</div>
+        <p class="fact-desc">Sustainable per-person carbon budget needed to meet Paris Agreement targets</p>
+      </div>
+    </div>
+
+    <!-- Edu cards -->
+    <div class="edu-sections">
+      <div class="edu-card">
+        <div class="edu-card-top">
+          <div class="edu-card-icon">🌿</div>
+          <div>
+            <div class="edu-card-title">What is a Carbon Footprint?</div>
+            <p class="edu-card-desc">A carbon footprint is the total amount of greenhouse gases — particularly CO₂ — generated by your actions, measured in tonnes CO₂ equivalent (CO₂e) per year.</p>
+          </div>
+        </div>
+        <div class="edu-card-facts">
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>Includes direct emissions (driving, flying) and indirect (food production, manufacturing)</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>The average global citizen emits about 7 tonnes CO₂e per year</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>Sustainable living requires staying under 2 tonnes per person by 2050</div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-top">
+          <div class="edu-card-icon">🏭</div>
+          <div>
+            <div class="edu-card-title">Where Do Emissions Come From?</div>
+            <p class="edu-card-desc">Global greenhouse gas emissions are spread across several sectors, each contributing differently to climate change and offering different reduction opportunities.</p>
+          </div>
+        </div>
+        <div class="edu-card-facts">
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span><strong>Energy:</strong> 73% of all emissions — electricity, heat, and transport</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span><strong>Agriculture:</strong> 18.4% from livestock, rice, land use change</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span><strong>Industry:</strong> Cement, steel, and chemicals add ~5.2%</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span><strong>Waste:</strong> Landfills and wastewater treatment contribute ~3.2%</div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-top">
+          <div class="edu-card-icon">🌡️</div>
+          <div>
+            <div class="edu-card-title">The Greenhouse Effect</div>
+            <p class="edu-card-desc">Greenhouse gases trap heat in the Earth's atmosphere, acting like a blanket. Without them the Earth would be too cold for life — but too many cause dangerous warming.</p>
+          </div>
+        </div>
+        <div class="edu-card-facts">
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>CO₂ stays in the atmosphere for 300–1,000 years after being released</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>Methane (from livestock and landfills) is 80x more potent than CO₂ over 20 years</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>N₂O from fertilizers is 265x more potent than CO₂ over 100 years</div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-top">
+          <div class="edu-card-icon">🌲</div>
+          <div>
+            <div class="edu-card-title">Nature-Based Solutions</div>
+            <p class="edu-card-desc">Forests, wetlands, and oceans are natural carbon sinks that absorb CO₂ from the atmosphere. Protecting and restoring them is critical to meeting climate targets.</p>
+          </div>
+        </div>
+        <div class="edu-card-facts">
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>Forests absorb about 2.6 billion tonnes of CO₂ per year globally</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>Oceans absorb about 25% of all CO₂ emitted by humans each year</div>
+          <div class="edu-fact-row"><span class="edu-fact-bullet">•</span>Rewilding 30% of land could sequester up to 70% of needed CO₂ reductions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="resources-section">
+    <div class="section-tag">🔗 Further Resources</div>
+    <h2 class="section-head">Learn More & Take Action</h2>
+    <div class="resources-grid">
+      <div class="resource-card">
+        <div class="resource-tag">Science</div>
+        <div class="resource-title">IPCC Climate Reports</div>
+        <p class="resource-desc">The Intergovernmental Panel on Climate Change publishes the world's most comprehensive assessment of climate science, impacts, and solutions.</p>
+        <div class="resource-link">Visit IPCC.ch →</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-tag">Action</div>
+        <div class="resource-title">Project Drawdown</div>
+        <p class="resource-desc">A comprehensive plan to reduce and drawdown greenhouse gas emissions through 100 substantive, existing solutions implemented at scale.</p>
+        <div class="resource-link">Visit Drawdown.org →</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-tag">Data</div>
+        <div class="resource-title">Our World in Data — CO₂</div>
+        <p class="resource-desc">Visualise per-country, per-sector, and historical emissions data with interactive charts and analysis from Oxford University researchers.</p>
+        <div class="resource-link">Visit OurWorldInData.org →</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-tag">Policy</div>
+        <div class="resource-title">The Paris Agreement</div>
+        <p class="resource-desc">Learn about the global treaty signed by 196 countries committing to limit warming to 1.5–2°C above pre-industrial levels and its current progress.</p>
+        <div class="resource-link">Visit UNFCCC.int →</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-tag">Community</div>
+        <div class="resource-title">The Nature Conservancy</div>
+        <p class="resource-desc">Join TNC's global community working to protect the lands and waters on which all life depends through science, partnerships and action.</p>
+        <div class="resource-link">Visit Nature.org →</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-tag">Tools</div>
+        <div class="resource-title">Carbon Offsetting Guide</div>
+        <p class="resource-desc">After reducing what you can, learn how to responsibly offset remaining emissions through verified reforestation and renewable energy projects.</p>
+        <div class="resource-link">Explore Options →</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">🌿 Terra Tracker</div>
+        <p class="footer-tagline">The Nature Conservancy — empowering individuals to understand and reduce their carbon footprint.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a onclick="showPage('calculator')">Calculator</a></li>
+          <li><a onclick="showPage('results-page')">Results</a></li>
+          <li><a onclick="showPage('tips-page')">Tips</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a onclick="showPage('education')">Climate Science</a></li>
+          <li><a onclick="showPage('education')">Carbon Facts</a></li>
+          <li><a onclick="showPage('education')">Resources</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a>Our Mission</a></li>
+          <li><a>Privacy Policy</a></li>
+          <li><a>Terms of Service</a></li>
+          <li><a>Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Terra Tracker · The Nature Conservancy</span>
+      <div style="display:flex;gap:20px">
+        <a>Privacy Policy</a><a>Terms of Service</a><a>Contact Us</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ─── PAGE ROUTING ───
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Nav active
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navMap = { home:'nav-home', calculator:'nav-calculator', 'results-page':'nav-results', 'tips-page':'nav-tips', education:'nav-education' };
+  if (navMap[id]) document.getElementById(navMap[id]).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'tips-page') renderTips('all');
+}
+
+// ─── CALCULATOR STEPS ───
+let currentStep = 0;
+function goStep(n) {
+  document.querySelectorAll('.form-section').forEach((s,i) => s.classList.toggle('active', i===n));
+  document.querySelectorAll('.step-tab').forEach((t,i) => {
+    t.classList.remove('active','done');
+    if (i===n) t.classList.add('active');
+    else if (i<n) t.classList.add('done');
+  });
+  currentStep = n;
+  window.scrollTo({ top: 68, behavior: 'smooth' });
+}
+
+function getV(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+function getR(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? parseFloat(el.value) : 0;
+}
+
+function runCalculate() {
+  // Transport
+  const carFactor = getV('c_carType');
+  const km = getV('c_km');
+  const sf = getV('c_shortFlights');
+  const lf = getV('c_longFlights');
+  const pub = getR('pub');
+  const transport = Math.max(0, carFactor * km * 52 / 1000 + sf * 0.3 + lf * 1.5 + pub);
+
+  // Home
+  const ef = getV('c_elec');
+  const kwh = getV('c_kwh');
+  const hf = getV('c_heat');
+  const hu = getV('c_heatUse');
+  const mb = Math.max(1, getV('c_members'));
+  const ht = getV('c_homeType');
+  const home = Math.max(0, (ef * kwh * 12) / 1000 / mb + hf * hu * ht / mb);
+
+  // Diet
+  const dt = getV('c_diet');
+  const da = getV('c_dairy');
+  const wa = getR('waste');
+  const lc = getR('local');
+  const diet = Math.max(0, dt + da + wa + lc);
+
+  // Lifestyle
+  const sh = getV('c_shop');
+  const el = getV('c_electronics');
+  const st = getR('stream');
+  const rc = getR('recycle');
+  const lifestyle = Math.max(0, sh + el * 0.3 + st + rc);
+
+  const total = transport + home + diet + lifestyle;
+  updateResults(total, { transport, home, diet, lifestyle });
+  showPage('results-page');
+}
+
+function updateResults(total, b) {
+  const t = total || 7.2;
+  document.getElementById('r_total').textContent = t.toFixed(1);
+
+  // Badge
+  const badge = document.getElementById('r_badge');
+  const comp = document.getElementById('r_compare');
+  if (t < 2) {
+    badge.className = 'score-rating rating-good';
+    badge.textContent = '🌟 Excellent — Well Below Average';
+    comp.textContent = `Your footprint of ${t.toFixed(1)}t is far below the global average of 7.0t. You're a sustainability champion!`;
+  } else if (t < 5) {
+    badge.className = 'score-rating rating-good';
+    badge.textContent = '✅ Good — Below Average';
+    comp.textContent = `Your footprint of ${t.toFixed(1)}t is below the global average of 7.0t. A few more changes could cut it further.`;
+  } else if (t < 9) {
+    badge.className = 'score-rating rating-avg';
+    badge.textContent = '⚠️ Average — Room to Improve';
+    comp.textContent = `Your footprint of ${t.toFixed(1)}t is near the global average of 7.0t. Targeted actions could make a real difference.`;
+  } else {
+    badge.className = 'score-rating rating-high';
+    badge.textContent = '🔴 High — Action Recommended';
+    comp.textContent = `Your footprint of ${t.toFixed(1)}t is above the global average of 7.0t. Start with the biggest category for quick wins.`;
+  }
+
+  // Bars
+  const max = Math.max(b.transport, b.home, b.diet, b.lifestyle, 0.1);
+  ['transport','home','diet','lifestyle'].forEach(k => {
+    const pct = (b[k] / max * 100).toFixed(1) + '%';
+    setTimeout(() => {
+      const el = document.getElementById('rb_'+k);
+      if (el) el.style.width = pct;
+    }, 300);
+    const vEl = document.getElementById('rv_'+k);
+    if (vEl) vEl.textContent = b[k].toFixed(2) + 't';
+  });
+
+  // Donut
+  const circ = 439;
+  const pcts = { transport: b.transport/t, home: b.home/t, diet: b.diet/t, lifestyle: b.lifestyle/t };
+  // update legend
+  ['transport','home','diet','lifestyle'].forEach((k,i) => {
+    const ids = ['lp_t','lp_h','lp_d','lp_l'];
+    const el = document.getElementById(ids[i]);
+    if (el) el.textContent = Math.round(pcts[k]*100) + '%';
+  });
+
+  // Comparison bar
+  const youBar = document.getElementById('bar_you');
+  const youLabel = document.getElementById('cval_you');
+  if (youBar) youBar.style.height = Math.min(140, t / 14.2 * 140).toFixed(0) + 'px';
+  if (youLabel) youLabel.textContent = t.toFixed(1) + 't';
+}
+
+// ─── TIPS DATA & RENDER ───
+const tipsData = [
+  { cat:'transport', icon:'⚡', bg:'#e8f4fb', title:'Switch to an Electric Vehicle', desc:'EVs produce up to 70% fewer lifetime CO₂ emissions than petrol cars, and with renewable energy, that rises to 90%+. Consider an EV for your next car purchase.', impact:'Save 1.5–2.5t CO₂/yr' },
+  { cat:'transport', icon:'🚲', bg:'#e8fbee', title:'Cycle or Walk for Short Trips', desc:'Replace any journey under 5km with cycling or walking. Zero emissions, free exercise, and often faster in urban areas during rush hour.', impact:'Save 0.5–1.0t CO₂/yr' },
+  { cat:'transport', icon:'🚌', bg:'#fdf0e8', title:'Use Public Transport Daily', desc:'Buses emit 4x and trains 6x less CO₂ per km than driving alone. Switching your daily commute to public transport can cut transport emissions by half.', impact:'Save 0.5–1.5t CO₂/yr' },
+  { cat:'transport', icon:'✈️', bg:'#f0eefb', title:'Replace Flights with Trains', desc:'One return long-haul flight generates more CO₂ than many people produce in a year from all other activities. Consider trains for European destinations.', impact:'Save 1.0–2.5t CO₂/yr' },
+  { cat:'transport', icon:'🚗', bg:'#e8f4fb', title:'Carpool to Work', desc:'Sharing your commute with just one other person halves your per-trip transport emissions. Apps like BlaBlaCar make finding carpool partners easy.', impact:'Save 0.4–0.8t CO₂/yr' },
+  { cat:'home', icon:'☀️', bg:'#fdf0e8', title:'Install Rooftop Solar Panels', desc:'Solar PV can cut your home electricity emissions by up to 90%. Systems typically pay back their carbon cost within 2–3 years and last 25+ years.', impact:'Save 1.0–2.5t CO₂/yr' },
+  { cat:'home', icon:'🌡️', bg:'#e8fbee', title:'Improve Home Insulation', desc:'Proper loft and wall insulation reduces heating energy demand by 20–40%. It\'s the single most cost-effective retrofit for most homes.', impact:'Save 0.3–0.8t CO₂/yr' },
+  { cat:'home', icon:'💡', bg:'#e8f4fb', title:'Switch All Bulbs to LED', desc:'LED bulbs use 75% less energy than incandescent bulbs and last 15–25x longer. If every home switched, it would cut emissions by hundreds of millions of tonnes.', impact:'Save 0.1–0.2t CO₂/yr' },
+  { cat:'home', icon:'🔌', bg:'#f0eefb', title:'Eliminate Standby Power', desc:'Electronics on standby can consume 10% of your home\'s electricity. Use smart power strips and unplug devices you\'re not using to eliminate "vampire power".', impact:'Save 0.05–0.15t CO₂/yr' },
+  { cat:'home', icon:'🥶', bg:'#fdf0e8', title:'Lower Your Thermostat by 1°C', desc:'Reducing your heating temperature by just 1°C can cut heating bills and emissions by up to 10%. Put on a jumper before reaching for the thermostat.', impact:'Save 0.1–0.3t CO₂/yr' },
+  { cat:'diet', icon:'🥩', bg:'#e8fbee', title:'Reduce Red Meat to Once a Week', desc:'Beef produces 60kg CO₂e per kg produced — 10x more than chicken and 50x more than legumes. Even one less beef meal per week makes a significant difference.', impact:'Save 0.5–1.0t CO₂/yr' },
+  { cat:'diet', icon:'🌱', bg:'#e8f4fb', title:'Try Plant-Based Days', desc:'Committing to just two meat-free days per week can reduce your food-related emissions by 20–30%. Try "Meat-Free Monday" to start a sustainable habit.', impact:'Save 0.3–0.6t CO₂/yr' },
+  { cat:'diet', icon:'🛒', bg:'#fdf0e8', title:'Buy Local & Seasonal Produce', desc:'Food transport can account for 10% of food\'s climate impact. Buying local, seasonal produce at farmers\' markets reduces food miles and supports your local economy.', impact:'Save 0.1–0.3t CO₂/yr' },
+  { cat:'diet', icon:'🗑️', bg:'#f0eefb', title:'Cut Food Waste in Half', desc:'Around 8-10% of global greenhouse gases come from wasted food. Plan meals, store food properly, and compost any unavoidable scraps to close the loop.', impact:'Save 0.2–0.5t CO₂/yr' },
+  { cat:'lifestyle', icon:'♻️', bg:'#e8fbee', title:'Recycle & Compost Everything', desc:'Proper recycling and composting keeps materials out of landfill, reducing methane emissions from decomposing organic waste — a potent greenhouse gas.', impact:'Save 0.1–0.3t CO₂/yr' },
+  { cat:'lifestyle', icon:'👕', bg:'#fdf0e8', title:'Shop Secondhand First', desc:'Fast fashion produces 10% of global CO₂ emissions. Before buying new, check charity shops, Depop, or Vinted. A secondhand item has effectively zero new carbon cost.', impact:'Save 0.2–0.5t CO₂/yr' },
+  { cat:'lifestyle', icon:'📱', bg:'#e8f4fb', title:'Extend Device Lifespan', desc:'Manufacturing a new smartphone emits about 70kg of CO₂. Keeping your phone for 4 years instead of 2 halves this impact. Repair before replacing.', impact:'Save 0.05–0.15t CO₂/yr' },
+  { cat:'lifestyle', icon:'🌳', bg:'#f0eefb', title:'Plant Trees or Offset Carefully', desc:'Tree planting and verified carbon offsets can neutralise remaining emissions. Ensure offsets are certified by Gold Standard or Verra for genuine impact.', impact:'Offset 0.5–5.0t CO₂/yr' },
+];
+
+const bgMap = { transport:'#0d2a3d', home:'#2a1a0d', diet:'#0d2a1a', lifestyle:'#1a0d2a' };
+
+function renderTips(filter) {
+  const grid = document.getElementById('tipsGrid');
+  if (!grid) return;
+  const filtered = filter === 'all' ? tipsData : tipsData.filter(t => t.cat === filter);
+  const catLabel = { transport:'🚗 Transport', home:'🏠 Home Energy', diet:'🍽️ Diet', lifestyle:'🛍️ Lifestyle' };
+  const catColor = { transport:'#60c9f5', home:'#ffa040', diet:'#63d49e', lifestyle:'#a78bfa' };
+  grid.innerHTML = filtered.map(t => `
+    <div class="tip-full-card">
+      <div class="tip-full-top" style="background:${bgMap[t.cat]||'#0d2a1a'}">${t.icon}</div>
+      <div class="tip-full-body-inner">
+        <div class="tip-full-cat" style="color:${catColor[t.cat]||'#63d49e'}">${catLabel[t.cat]||t.cat}</div>
+        <div class="tip-full-title">${t.title}</div>
+        <p class="tip-full-desc">${t.desc}</p>
+        <div class="tip-full-impact">
+          <span class="tip-impact-label">🌿 Potential impact</span>
+          <span class="tip-impact-val">${t.impact}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterTips(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTips(cat);
+}
+
+// ─── ANIMATION OBSERVER ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.anim').forEach(el => observer.observe(el));
+
+// Init tips
+renderTips('all');
+</script>
+</body>
+</html>
