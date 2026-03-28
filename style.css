@@ -1,0 +1,84 @@
+:root{
+  --bg-1:#071023;
+  --bg-2:#0b2540;
+  --card-bg: rgba(255,255,255,0.06);
+  --muted: rgba(255,255,255,0.7);
+  --accent:#60a5fa;
+  --accent-2:#34d399;
+}
+
+body{
+  font-family: 'Inter', Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+  background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  color: white;
+}
+
+.card{
+  background: var(--card-bg);
+  padding:28px;
+  border-radius:16px;
+  width:380px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  backdrop-filter: blur(8px);
+}
+
+.title{
+  margin:0 0 12px 0;
+  font-weight:600;
+  font-size:20px;
+}
+
+.form-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:12px;
+}
+
+.form-row label{
+  width:120px;
+  text-align:left;
+  color:var(--muted);
+  font-size:14px;
+}
+
+select, input[type="range"]{
+  flex:1;
+  -webkit-appearance:none;
+  appearance:none;
+  background:rgba(255,255,255,0.03);
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.04);
+  color:white;
+}
+
+.value{width:42px; text-align:right; color:var(--muted); font-weight:600}
+
+/* Range styling */
+input[type="range"]{height:28px}
+input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent),#7dd3fc)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:white;margin-top:-5px;box-shadow:0 2px 6px rgba(0,0,0,0.4)}
+input[type="range"]:focus{outline:none}
+
+.result{
+  margin-top:18px;
+  font-size:18px;
+  padding:10px 12px;
+  border-radius:10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+
+.suggestion{color:var(--muted); margin:8px 0 0 0; font-size:13px}
+
+canvas{display:block; width:100% !important; height:190px !important; margin-top:16px}
+
+@media(max-width:420px){
+  .card{width:92vw}
+  .form-row label{width:100px}
+}

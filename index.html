@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Carbon Footprint Checker</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1 class="title">🌍 Carbon Footprint Checker</h1>
+
+    <div class="form-row">
+      <label>Transport</label>
+      <select id="transport">
+        <option value="car">Car</option>gi
+        <option value="bus">Bus</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label>Distance (km/day)</label>
+      <input type="range" min="0" max="50" id="distance" oninput="updateValue('distVal', this.value)">
+      <span class="value" id="distVal">0</span>
+    </div>
+
+    <div class="form-row">
+      <label>Electricity (units/day)</label>
+      <input type="range" min="0" max="20" id="electricity" oninput="updateValue('elecVal', this.value)">
+      <span class="value" id="elecVal">0</span>
+    </div>
+
+    <div class="form-row">
+      <label>Diet</label>
+      <select id="diet">
+        <option value="veg">Veg</option>
+        <option value="nonveg">Non-Veg</option>
+      </select>
+    </div>
+
+    <div id="result" class="result"></div>
+    <p id="suggestion" class="suggestion"></p>
+
+    <canvas id="chart"></canvas>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
